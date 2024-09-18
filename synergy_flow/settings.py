@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
     'DEFAULT_PERMISSION_CLASSES': [
-        'project.views.MemberPermission'        # MemberPermission as default permission class
+        'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (         # JWT as default authentication class
         'rest_framework_simplejwt.authentication.JWTAuthentication',)

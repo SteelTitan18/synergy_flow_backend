@@ -7,7 +7,7 @@ from project import views
 router = routers.SimpleRouter()
 
 # defining the base route for requests
-router.register('custom_user', views.TootleUserViewSet, basename="tootle_user")
+router.register('custom_user', views.CustomUserViewSet, basename="custom_user")
 router.register('project', views.ProjectViewSet, basename="project")
 router.register('task', views.TaskViewSet, basename="task")
 router.register('notification', views.NotificationViewSet, basename='participant')
