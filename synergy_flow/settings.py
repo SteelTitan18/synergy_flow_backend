@@ -49,11 +49,15 @@ INSTALLED_APPS = [
     # additional packages
     'rest_framework',
     'phonenumber_field',
+
+    # allowing cors
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -162,3 +166,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),     # a token is valid for 1 day
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),    # a refresh_token is valid for one day
 }
+
+# allows CORS from all origins
+CORS_ORIGIN_ALLOW_ALL = True
+
+# setting of local host like allowed hosts
+ALLOWED_HOSTS = ["127.0.0.1"]
