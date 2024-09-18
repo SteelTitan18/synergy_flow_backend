@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+from datetime import timedelta
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -131,7 +132,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+# static files configuration
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -140,3 +145,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # configuration so that the Project app user class is used for authentication
 AUTH_USER_MODEL = 'project.CustomUser'
+
+# rest frameword configurations
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_PERMISSION_CLASSES': [
+        'project.views.MemberPermission'        # MemberPermission as default permission class
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (         # JWT as default authentication class
+        'rest_framework_simplejwt.authentication.JWTAuthentication',)
+}
+
+# jwt settings
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),     # a token is valid for 1 day
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),    # a refresh_token is valid for one day
+}

@@ -1,6 +1,10 @@
+import re
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny, BasePermission
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
 
 from project.models import CustomUser, Notification, Project, Task
 from project.serializers import CustomUserSerializer, NotificationSerializer, ProjectSerializer, TaskSerializer
@@ -35,6 +39,63 @@ class AdminPermission(BasePermission):
 
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated and request.user.user_type == 'ADM'
+
+
+# This function generates token and refresh_token for authentication
+def get_tokens_for_user(user):
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+# This is the view which implements the authentication
+class SigninView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+
+    
+
+    def post(self, request, *args, **kwargs):
+        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$' # email regular expression
+        username = request.data.get("username", None)       # get credentials from the request
+        password = request.data.get("password", None)
+
+        # since the user can log in either by email or by username, it is necessary to check 
+        # which of the 2 was used and retrieve the user based on that
+        try:
+            if re.match(email_regex, username):
+                user = CustomUser.objects.get(email=username)
+            else:
+                user = CustomUser.objects.get(username = username)
+
+            auth = user.check_password(password)    # check if the password given is the same as
+                                                    # the user found password
+
+            if auth:
+                # if the user is authenticated, a response will be sent to 
+                # the frontend with this following payload
+                token_data = get_tokens_for_user(user)
+                token = token_data["access"]
+                refresh = token_data["refresh"]
+                response = Response(
+                    {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "firstname": user.first_name,
+                        "lastname": user.last_name,
+                        "token": token,
+                        "refresh": refresh,
+                        'type': user.user_type
+                    }
+                )
+                return response
+
+            else: # if the auth is false, the the passsword is wrong
+                return Response({'error': 'Incorrect password'})
+        except: # if the user is not found, the user must correct it's email or username
+            return Response({'message': 'User not found'})
 
 
 # This class allows you to implement the execution of each of the requests 
