@@ -38,4 +38,6 @@ Baskend d'une Mini plateforme de gestion de projets collaborations
 
 - Création des autres utilisateurs sur django-admin site
 
+- Installer Redis sur votre machine et lancer le serveur Redis (`sudo systemctl start redis` sur Linux)
+
 - Lancer le serveur `python manage.py runserver`
