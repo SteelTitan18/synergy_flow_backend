@@ -69,8 +69,7 @@ class SigninView(TokenObtainPairView):
             else:
                 user = CustomUser.objects.get(username = username)
 
-            auth = user.check_password(password)    # check if the password given is the same as
-                                                    # the user found password
+            auth = user.check_password(password)    # check if the password given is the same as                                    # the user found password
 
             if auth:
                 # if the user is authenticated, a response will be sent to 
@@ -101,7 +100,6 @@ class SigninView(TokenObtainPairView):
 # This class allows you to implement the execution of each of the requests 
 # (POST, GET, DELETE, PUT) on each of the classes of the application
 class CustomUserViewSet(ModelViewSet):
-    queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     fields = '__all__'
 
@@ -115,6 +113,14 @@ class CustomUserViewSet(ModelViewSet):
             return [MemberPermission()]
         
         return [AdminPermission(), ]
+    
+    def get_queryset(self):
+        queryset = CustomUser.objects.all()
+        project_id = self.request.query_params.get('project_id')
+        if project_id:
+            return  Project.objects.get(pk=project_id).assignees.all()
+            
+        return queryset
     
 
 class ProjectViewSet(ModelViewSet):
@@ -132,7 +138,6 @@ class ProjectViewSet(ModelViewSet):
 
 
 class TaskViewSet(ModelViewSet):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     fields = '__all__'
 
@@ -145,6 +150,14 @@ class TaskViewSet(ModelViewSet):
             return [MemberPermission()]
         
         return [AdminPermission()]
+    
+    def get_queryset(self):
+        queryset = Task.objects.all()
+        project_id = self.request.query_params.get('project_id')
+        if project_id:
+            return  Task.objects.filter(task_project=project_id)
+            
+        return queryset
         
 
 class NotificationViewSet(ModelViewSet):

@@ -1,7 +1,7 @@
-from cProfile import label
-from os import read
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
 # Create your models here.
 
@@ -64,3 +64,15 @@ class Notification(models.Model):
     notification_receiver = models.ForeignKey(CustomUser, related_name='notification_receiver', on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
     
+
+# password encryptation
+@receiver(pre_save, sender=CustomUser)
+def password_validation(sender, instance, **kwargs):
+    if not instance.is_superuser:
+        if not instance.pk:
+            instance.set_password(instance.password)
+        else:
+            original = CustomUser.objects.get(pk=instance.pk)
+            print('Old object - old password')
+            if instance.password != original.password:
+                instance.set_password(instance.password)

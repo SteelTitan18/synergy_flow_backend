@@ -16,6 +16,24 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    # add project complete data to task payload
+    task_project = ProjectSerializer(read_only=True)
+    project_id = serializers.IntegerField(write_only=True)
+    assignees = serializers.PrimaryKeyRelatedField(many=True, queryset=CustomUser.objects.all(), write_only=True)
+
+    def create(self, validated_data):
+        project = Project.objects.get(pk=validated_data.pop('project_id'))
+        assignees = validated_data.pop('task_assignees', [])
+        
+        # Create the task instance
+        task = Task.objects.create(task_project=project, **validated_data)
+        
+        # Set the many-to-many relationship
+        if assignees:
+            task.task_assignees.set(assignees)
+        
+        return task
+
     class Meta:
         model = Task
         fields = '__all__'
