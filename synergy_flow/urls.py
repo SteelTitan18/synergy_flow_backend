@@ -26,7 +26,7 @@ urlpatterns = [
     path('api/project/', include('project.urls')), # adding of project app URL to the project urls
 
     # adding of chat related urls to project urls
-    path('api/chat', include('chat.urls')),
+    path('api/chat/', include('chat.urls')),
     path('ws/', include(routing.websocket_urlpatterns)),
 ]
 

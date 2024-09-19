@@ -3,10 +3,7 @@ import time
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async, AsyncToSync
-
-from project.models import Project
-
-from .models import Message
+from django.apps import apps
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -31,26 +28,30 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
 
         content = text_data_json["content"]
-        username = text_data_json["username"]
-        moment = text_data_json["moment"]
+        username = text_data_json["sender"]
+        # moment = text_data_json["moment"]
 
         room = self.room_name
+        message_obj = await self.save_message(username, content)
 
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
-            {"type": "chat_message", "message": content, "username": username, "moment": moment},
+            {"type": "chat_message", "message": message_obj.content, "username": message_obj.sender},
         )
 
     # Receive message from room group
     async def chat_message(self, event):
         message = event["message"]
-        moment = event["moment"]
+        # moment = event["moment"]
         username = event["username"]
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({"message": message, "moment": moment, "username": username}))
+        await self.send(text_data=json.dumps({"message": message,  "username": username}))
 
     @sync_to_async
-    def save_message(self, username, message):
-        Message.objects.create(sender=username, content=message, project=Project.objects.get(pk=self.room_name))
+    def save_message(self, username, content):
+        Project = apps.get_model('project', 'Project')
+        Message = apps.get_model('chat', 'Message')
+        obj = Message.objects.create(sender=username, content=content, message_project=Project.objects.get(pk=self.room_name))
+        return obj
