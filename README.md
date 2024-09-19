@@ -36,7 +36,7 @@ Baskend d'une Mini plateforme de gestion de projets collaborations
 
 - Création d'un superutilisateur pour accéder à django-admin site `python manage.py createsuperuser`
 
-- Création des autres utilisateurs sur django-admin site
+- Création des autres utilisateurs sur django-admin site `127.0.0.1:8000/admin/`
 
 - Installer Redis sur votre machine et lancer le serveur Redis (`sudo systemctl start redis` sur Linux)
 
