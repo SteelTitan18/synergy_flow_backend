@@ -1,3 +1,4 @@
+from email import message
 import json
 import time
 
@@ -37,17 +38,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
-            {"type": "chat_message", "message": message_obj.content, "username": message_obj.sender},
+            {"type": "chat_message", "content": message_obj.content, "sender": message_obj.sender },
         )
 
     # Receive message from room group
     async def chat_message(self, event):
-        message = event["message"]
+        message = event["content"]
         # moment = event["moment"]
-        username = event["username"]
+        username = event["sender"]
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({"message": message,  "username": username}))
+        await self.send(text_data=json.dumps({"content": message,  "sender": username}))
 
     @sync_to_async
     def save_message(self, username, content):
