@@ -32,4 +32,10 @@ Baskend d'une Mini plateforme de gestion de projets collaborations
 - Créez un fichier .env qui ne sera pas ajouté au git. À l'intérieur, définissez les variables `DB_NAME`, `DB_USER`, `DB_PASSWORD`,
   `DB_HOST` et `DB_PORT` en fonction de vos configurations postgresql
 
+  ## Exécution
+
+- Création d'un superutilisateur pour accéder à django-admin site `python manage.py createsuperuser`
+
+- Création d'un autre utilisateur via sur django-admin site
+
 - Lancer le serveur `python manage.py runserver`
