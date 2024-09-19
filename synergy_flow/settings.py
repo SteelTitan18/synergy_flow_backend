@@ -46,12 +46,18 @@ INSTALLED_APPS = [
     # adding of project app to installed apps
     'project',
 
+    # adding of chat app to installed apps
+    'chat',
+
     # additional packages
     'rest_framework',
     'phonenumber_field',
 
-    # allowing cors
-    'corsheaders'
+    # cors management library
+    'corsheaders',
+
+    # real-time managemt library
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -83,7 +89,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'synergy_flow.wsgi.application'
+# WSGI_APPLICATION = 'synergy_flow.wsgi.application'
+
+# using of asgi to enable asynchronous features with websockets
+ASGI_APPLICATION = 'synergy_flow.asgi.application'
 
 
 # Database

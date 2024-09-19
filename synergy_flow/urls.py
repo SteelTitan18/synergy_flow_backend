@@ -19,9 +19,15 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 
+from chat import routing
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/project/', include('project.urls')), # adding of project app URL to the project urls
+
+    # adding of chat related urls to project urls
+    path('api/chat', include('chat.urls')),
+    path('ws/', include(routing.websocket_urlpatterns)),
 ]
 
 # adding of static files url in DEBUG mode
