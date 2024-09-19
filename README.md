@@ -2,7 +2,7 @@
 
 ## Description
 
-This is the central backend of Tootle. All APIs of the company's projects are based there.
+Baskend d'une Mini plateforme de gestion de projets collaborations
 
 ## Prérequis
 
@@ -19,7 +19,7 @@ This is the central backend of Tootle. All APIs of the company's projects are ba
 - Actuver l'environnement
   `source .venv/bin/activate`
 
-- Accéder au dossier /synergy_flow et télécharger les dépendances
+- Accéder au dossier /synergy_flow et installer les dépendances
   `cd synergy_flow`
   `pip install -r requirements.txt`
 
