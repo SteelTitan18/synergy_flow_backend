@@ -26,12 +26,12 @@ class ProfilePermission(BasePermission):
         return obj == request.user
     
 
-class AssigneesPermission(BasePermission):
+class AssigneesOrAdminPermission(BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated
     
     def has_object_permission(self, request, view, obj):
-        return request.user in obj.assignees.all()
+        return request.user in obj.task_assignees.all() or request.user.user_type == 'ADM'
     
 
 # admin user permission class
@@ -125,8 +125,7 @@ class ProjectViewSet(ModelViewSet):
 
     def get_permissions(self):
         # members are just allowed to do GET method
-
-        if self.action == 'list':
+        if self.action == 'list' or self.action == 'retrieve':
             return [MemberPermission()]
         
         return [AdminPermission(), ]
@@ -140,12 +139,12 @@ class TaskViewSet(ModelViewSet):
     def get_permissions(self):
         # in the case of tasks, only the admins can do POST and DELETE, 
         # members can do GET requests and only assignees users or and admin can do an PUT request
-        if self.action == 'update':
-            return [AssigneesPermission(), AdminPermission()]
+        if self.action == 'update' or  self.action == 'retrieve':
+            return [ AssigneesOrAdminPermission()]
         elif self.action == 'list':
             return [MemberPermission()]
         
-        return [AdminPermission(), ]
+        return [AdminPermission()]
         
 
 class NotificationViewSet(ModelViewSet):
