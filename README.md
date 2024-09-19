@@ -36,6 +36,6 @@ Baskend d'une Mini plateforme de gestion de projets collaborations
 
 - Création d'un superutilisateur pour accéder à django-admin site `python manage.py createsuperuser`
 
-- Création d'un autre utilisateur via sur django-admin site
+- Création des autres utilisateurs sur django-admin site
 
 - Lancer le serveur `python manage.py runserver`
